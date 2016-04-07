@@ -86,6 +86,7 @@ public class TestInParallelPostBuild  extends Recorder {
 
     //Fields from Jenkins plugin UX
     private String batchAccount;
+    private int vmCount;
     private String containerSAS;
     private String filePath;
     private String compressionToolPath;
@@ -119,6 +120,8 @@ public class TestInParallelPostBuild  extends Recorder {
         return batchAccount;
     }
 
+    public int getVmCount() { return vmCount; }
+
     public String getContainerSAS() {
         return containerSAS;
     }
@@ -135,6 +138,7 @@ public class TestInParallelPostBuild  extends Recorder {
 
     @DataBoundConstructor
     public TestInParallelPostBuild(final String batchAccount,
+                                   final int vmCount,
                                    final String containerSAS,
                                    final String filePath,
                                    final String compressionToolPath,
@@ -143,6 +147,7 @@ public class TestInParallelPostBuild  extends Recorder {
                                    ) {
         super();
         this.batchAccount = batchAccount;
+        this.vmCount = vmCount;
         this.containerSAS = containerSAS;
         this.filePath = filePath;
         this.compressionToolPath = compressionToolPath;
@@ -171,15 +176,14 @@ public class TestInParallelPostBuild  extends Recorder {
                            BuildListener listener) throws InterruptedException, IOException {
 
         long startTime = System.currentTimeMillis();
+
         this.uploadList = new HashMap<String, ResourceFileEntityNonZipped>();
         this.taskGroupDefinitionMap = new HashMap<String, TaskGroupDefinition>();
-
         this.commonResourceFileEntityMap = new HashMap<String, ResourceFileEntity>();
         this.commonResourceFileEntityNonZippedMap = new HashMap<String, ResourceFileEntityNonZipped>();
 
         BatchAccountInfo batchAcc = getDescriptor().getBatchAccount(this.batchAccount);
         this.batchAccount = this.batchAccount.trim();
-
         try {
             String jobId = batchAccount + UUID.randomUUID().toString();
             Utils.print(listener, "JobId" + jobId);
@@ -208,7 +212,7 @@ public class TestInParallelPostBuild  extends Recorder {
             Upload7ZFilesAndUpdateMap(build, listener, jobId);
 
 
-            //4. Parse the xml and get the directory
+            //4. Parse the xml and update taskGroupDefinitionMap
             UpdateTaskGroupDefinitionMap(build, listener);
             Utils.print(listener, "Before updating");
             this.DebugPrintTaskGroupDefinitionMap(listener);
@@ -218,17 +222,18 @@ public class TestInParallelPostBuild  extends Recorder {
                 return false;
             }
 
+            //5. Upload bin drop binaries to Azure Storage
             this.CompressionAndUploadToAzureStorage(build, listener, jobId);
             Utils.print(listener, "After updating");
             this.DebugPrintTaskGroupDefinitionMap(listener);
 
+            //6. Generate SAS key for the container and update the blob URL with SAS
             StorageAccountInfo storageAcc1 = getDescriptor().getStorageAccount(this.storageAccount);
             String sasKey = AzureStorageHelper.generateSASURL(listener, storageAcc1.getStorageAccName(), storageAcc1.getStorageAccountKey(), jobId, storageAcc1.getBlobEndPointURL());
             Utils.print(listener, String.format("Generated SAS %s for the container", sasKey));
-
             UpdateSASForResources(build,listener, sasKey);
 
-            //5. Start Creating task + Wait till task finishes
+            //7. Start Creating task + Wait till task finishes
             UseBatchAndSubmitTasks(build, listener, jobId, sasKey);
 
             //6. Attach ResourceFile as task
@@ -432,10 +437,11 @@ public class TestInParallelPostBuild  extends Recorder {
         BatchSharedKeyCredentials cred = new BatchSharedKeyCredentials(batchAcc.getBatchServiceURL(), batchAcc.getBatchAccountName(), batchAcc.getBatchAccountKey());
 
         BatchClient client = BatchClient.Open(cred);
+        String poolId = batchAccount + "-jenkinspool";
 
         try {
             String userName = System.getProperty("user.name");
-            String poolId = batchAccount + "-jenkinspool";
+
             listener.getLogger().println("PoolName: " + poolId);
 
             listener.getLogger().println("Creating Azure Batch Pool of VMs...");
@@ -582,6 +588,9 @@ public class TestInParallelPostBuild  extends Recorder {
                 listener.getLogger().println("Deleting job with id : " + jobId);
                 client.getJobOperations().deleteJob(jobId);
                 listener.getLogger().println("Deleted Job with id : " + jobId);
+                listener.getLogger().println("Deleting VM Pool");
+                client.getPoolOperations().deletePool(poolId);
+                listener.getLogger().println("VM Pool deleted");
             } catch (BatchErrorException e) {
                 TakeActionFromException(build, listener, e, Result.FAILURE);
             } catch (IOException e) {
@@ -1262,12 +1271,12 @@ public class TestInParallelPostBuild  extends Recorder {
         }
         if (poolCollection != null & poolCollection.isEmpty()) {
             listener.getLogger().println(String.format("There isn't any pool with %s, hence creating pool...",poolId));
-            client.getPoolOperations().createPool(poolId, "4", "small", 4);
+            client.getPoolOperations().createPool(poolId, "4", "small", this.vmCount);
         }
 
         for (Iterator<CloudPool> p = poolCollection.iterator(); p.hasNext(); ) {
             listener.getLogger().println(p.next().getId());
-            //listener.getLogger().println(p.next().getDisplayName());
+            //listener.gbui etLogger().println(p.next().getDisplayName());
         }
 
         long startTime = System.currentTimeMillis();

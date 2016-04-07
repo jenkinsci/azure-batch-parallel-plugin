@@ -14,23 +14,15 @@
     <f:select />
   </f:entry>
 
-  <!--
-  <f:entry title="Binary Drop Path" field="binDropPath">
+  <f:entry title="Batch Pool - Number of VMs" field="vmCount">
     <f:textbox />
   </f:entry>
--->
 
   <f:entry title="Parallelism Definition File" field="filePath">
     <f:textbox />
   </f:entry>
 
-  <!--
-  <f:entry title="File Name filter" field="fileNameFilter">
-    <f:textbox />
-  </f:entry>
-  -->
-
-    <f:entry title="7Z Installation Path" field="compressionToolPath">
+  <f:entry title="7Z Installation Path" field="compressionToolPath">
     <f:textbox />
   </f:entry>
 
