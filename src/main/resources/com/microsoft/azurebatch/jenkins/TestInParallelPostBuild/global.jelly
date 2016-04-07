@@ -1,0 +1,85 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+  This Jelly script is used to produce the global configuration option.
+
+  Jenkins uses a set of tag libraries to provide uniformity in forms.
+  To determine where this tag is defined, first check the namespace URI,
+  and then look under $JENKINS/views/. For example, <f:section> is defined
+  in $JENKINS/views/lib/form/section.jelly.
+
+  It's also often useful to just check other similar scripts to see what
+  tags they use. Views are always organized according to its owner class,
+  so it should be straightforward to find them.
+-->
+  <f:section title="${%AzureBatch_title}" id="windows-azure-batch">
+    <f:entry title="${%entry_title}" >
+      <f:repeatable var="batchAccount" items="${descriptor.batchAccounts}" noAddButton="true" minimum="1">
+        <table width="100%">
+          <f:entry title="${%rep_batchAccountName}" help="/plugin/windows-azure-storage/help-storageAccountName.html">
+            <f:textbox name="azure_batchAccountName" value="${batchAccount.batchAccountName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_batchAccountKey}" help="help-BatchAccountKey.html">
+            <f:password name="azure_batchAccountKey" value="${batchAccount.batchAccountKey}" />
+          </f:entry>
+
+          <f:entry title="${%rep_batchServiceURL}" help="/plugin/windows-azure-storage/help-blobEndPointURL.html">
+            <f:textbox name="azure_batchServiceURL" value="${batchAccount.batchServiceURL}"/>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="right">
+              <f:validateButton
+                      title="${%rep_val_btn}" progress="${%rep_val_btn_msg}"
+                      method="checkAccount" with="azure_batchAccountName,azure_batchAccountKey,azure_batchServiceURL" />
+            </div>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="left">
+              <input type="button" value="${%rep_del_btn}" class="repeatable-delete show-if-not-only" style="margin-left: 1em;" />
+              <input type="button" value="${%rep_addmore_btn}" class="repeatable-add show-if-last" />
+            </div>
+
+          </f:entry>
+
+        </table>
+      </f:repeatable>
+
+      <f:repeatable var="storageAccount" items="${descriptor.storageAccounts}" noAddButton="true" minimum="1">
+        <table width="100%">
+          <f:entry title="${%rep_storageAccount}" help="/plugin/windows-azure-storage/help-storageAccountName.html">
+            <f:textbox name="azure_storageAccName" value="${storageAccount.storageAccountName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_storageAccountKey}" help="help-storageAccountKey.html">
+            <f:password name="azure_storageAccountKey" value="${storageAccount.storageAccountKey}" />
+          </f:entry>
+
+          <f:entry title="${%rep_blobEndPointURL}" help="/plugin/windows-azure-storage/help-blobEndPointURL.html">
+            <f:textbox name="azure_blobEndPointURL" value="${storageAccount.blobEndPointURL}"/>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="right">
+              <f:validateButton
+                      title="${%rep_val_btn}" progress="${%rep_val_btn_msg}"
+                      method="checkStorageAccount" with="azure_storageAccountName,azure_storageAccountKey,azure_blobURL" />
+            </div>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="left">
+              <input type="button" value="${%rep_del_btn}" class="repeatable-delete show-if-not-only" style="margin-left: 1em;" />
+              <input type="button" value="${%rep_addmorestorage_btn}" class="repeatable-add show-if-last" />
+            </div>
+
+          </f:entry>
+
+        </table>
+      </f:repeatable>
+
+    </f:entry>
+  </f:section>
+</j:jelly>

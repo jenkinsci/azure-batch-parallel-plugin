@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="assemblies" type="assembliesType"/>
+  <xs:complexType name="collectionType">
+    <xs:sequence>
+      <xs:element type="testType" name="test"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="total"/>
+    <xs:attribute type="xs:string" name="passed"/>
+    <xs:attribute type="xs:string" name="failed"/>
+    <xs:attribute type="xs:string" name="skipped"/>
+    <xs:attribute type="xs:string" name="name"/>
+    <xs:attribute type="xs:string" name="time"/>
+  </xs:complexType>
+  <xs:complexType name="assembliesType">
+    <xs:sequence>
+      <xs:element type="assemblyType" name="assembly"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="assemblyType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="errors"/>
+      <xs:element type="collectionType" name="collection"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name"/>
+    <xs:attribute type="xs:string" name="environment"/>
+    <xs:attribute type="xs:string" name="test-framework"/>
+    <xs:attribute type="xs:string" name="run-date"/>
+    <xs:attribute type="xs:string" name="run-time"/>
+    <xs:attribute type="xs:string" name="config-file"/>
+    <xs:attribute type="xs:string" name="total"/>
+    <xs:attribute type="xs:string" name="passed"/>
+    <xs:attribute type="xs:string" name="failed"/>
+    <xs:attribute type="xs:string" name="skipped"/>
+    <xs:attribute type="xs:string" name="time"/>
+<!--    <xs:attribute type="xs:string" name="errors"/>-->
+  </xs:complexType>
+  <xs:complexType name="testType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="type"/>
+        <xs:attribute type="xs:string" name="method"/>
+        <xs:attribute type="xs:string" name="time"/>
+        <xs:attribute type="xs:string" name="result"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

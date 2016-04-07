@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="TasksDescription" type="TasksDescriptionType"/>
+  <xs:complexType name="TasksDescriptionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="OwnerName"/>
+      <xs:element type="TaskGroupType" name="TaskGroup"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TaskType">
+    <xs:sequence>
+      <xs:element name="Command">
+        <xs:simpleType>
+           <xs:restriction base="xs:string">
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TaskGroupType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="BinDropPath"/>
+      <xs:element type="TaskType" name="Task" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
