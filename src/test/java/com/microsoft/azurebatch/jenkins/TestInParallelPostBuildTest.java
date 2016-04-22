@@ -22,7 +22,7 @@ public class TestInParallelPostBuildTest {
     @Test
     public void SimplestUnitTest()
     {
-        TestInParallelPostBuild t = new TestInParallelPostBuild("a", "b", "c", "d", "e", "f");
+        TestInParallelPostBuild t = new TestInParallelPostBuild("a", 1, "b", "c", "d", "e", "f");
         URL location = Test.class.getProtectionDomain().getCodeSource().getLocation();
         t.setDefinitionFilePath(location.getFile());
         Assert.assertEquals(true, t.Validation(null));
@@ -31,7 +31,7 @@ public class TestInParallelPostBuildTest {
     @Test
     public void GetAbsolutePathTest()
     {
-        TestInParallelPostBuild t = new TestInParallelPostBuild("a", "b", "c", "d", "e", "f");
+        TestInParallelPostBuild t = new TestInParallelPostBuild("a", 1, "b", "c", "d", "e", "f");
         System.out.println(t.getWorkspacePath());
         Assert.assertNotEquals(null, t.GetAbsolutePath("a"));
     }
@@ -45,7 +45,7 @@ public class TestInParallelPostBuildTest {
 
     private void UpdateTaskGroupDefinitionMapTest(String filePath, boolean expectedValue)
     {
-        TestInParallelPostBuild t = new TestInParallelPostBuild("a", "b", "c", "d", "e", "f");
+        TestInParallelPostBuild t = new TestInParallelPostBuild("a", 1, "b", "c", "d", "e", "f");
         t.setDefinitionFilePath(filePath);
         Assert.assertEquals(expectedValue, t.UpdateTaskGroupDefinitionMap(null, null));
     }

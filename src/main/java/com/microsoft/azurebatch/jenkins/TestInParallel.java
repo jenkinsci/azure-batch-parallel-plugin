@@ -245,7 +245,13 @@ public class TestInParallel extends Builder implements SimpleBuildStep {
         }
          if (poolCollection.isEmpty()) {
             listener.getLogger().println("no pool with this name");
-            client.getPoolOperations().createPool(poolId, "4", "small", 1);
+
+           CloudServiceConfiguration configuration = new CloudServiceConfiguration();
+           // Use OS 2012 R2
+           configuration.setOsFamily("4");
+           configuration.setTargetOSVersion("*");
+
+            client.getPoolOperations().createPool(poolId, "small", configuration, 1);
         }
 
         for(Iterator<CloudPool> p = poolCollection.iterator();p.hasNext();)

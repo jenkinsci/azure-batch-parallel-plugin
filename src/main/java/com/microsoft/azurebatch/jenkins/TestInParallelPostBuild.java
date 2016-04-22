@@ -1271,7 +1271,13 @@ public class TestInParallelPostBuild  extends Recorder {
         }
         if (poolCollection != null & poolCollection.isEmpty()) {
             listener.getLogger().println(String.format("There isn't any pool with %s, hence creating pool...",poolId));
-            client.getPoolOperations().createPool(poolId, "4", "small", this.vmCount);
+
+           CloudServiceConfiguration configuration = new CloudServiceConfiguration();
+           // Use OS 2012 R2
+           configuration.setOsFamily("4");
+           configuration.setTargetOSVersion("*");
+            
+            client.getPoolOperations().createPool(poolId, "small", configuration, this.vmCount);
         }
 
         for (Iterator<CloudPool> p = poolCollection.iterator(); p.hasNext(); ) {
