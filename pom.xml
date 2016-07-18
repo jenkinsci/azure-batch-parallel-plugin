@@ -24,7 +24,7 @@
         <jenkins-test-harness.version>2.1</jenkins-test-harness.version>
     </properties>
 
-    <name>Parallel Test Execution Plugin</name>
+    <name>Azure Batch Parallel Test Execution Plugin</name>
     <description>Execute tests in parallel with Microsoft Azure Batch service.</description>
     <url>https://azure.microsoft.com/en-us/documentation/services/batch/</url>
 
