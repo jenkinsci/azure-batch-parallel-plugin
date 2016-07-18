@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<assemblies>
-  <assembly name="C:\user\tasks\workitems\d84f9af6-5233-4180-b147-280e8888130a\job-1\c46b8174-a569-4814-9be4-75bbc1b72c3c\wd\aztaskbinaries\TestCode.DLL" environment="64-bit .NET 4.0.30319.34209 [collection-per-class, parallel]" test-framework="xUnit.net 2.0.0.2929" run-date="2016-03-21" run-time="23:22:16" config-file="C:\user\tasks\workitems\d84f9af6-5233-4180-b147-280e8888130a\job-1\c46b8174-a569-4814-9be4-75bbc1b72c3c\wd\xunitbin\xunit.console.exe.Config" total="1" passed="1" failed="0" skipped="0" time="0.718" errors="0">
-    <errors />
-    <collection total="1" passed="1" failed="0" skipped="0" name="Test collection for MyFirstUnitTests.Class1" time="0.058">
-      <test name="MyFirstUnitTests.Class1.PassingTest" type="MyFirstUnitTests.Class1" method="PassingTest" time="0.0580419" result="Pass" />
-    </collection>
-  </assembly>
-</assemblies>

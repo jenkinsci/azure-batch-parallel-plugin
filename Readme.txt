@@ -1,1 +1,0 @@
-Azure Batch - Jenkins plugin
