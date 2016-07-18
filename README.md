@@ -1,4 +1,4 @@
-# Parallel Test Execution Jenkins plugin with Microsoft Azure Batch
+# Azure Batch Parallel Test Execution Jenkins plugin
 
 This Jenkins post-build plugin allows you to execute tests in parallel with the Microsoft Azure Batch service, and can reduce the duration of your test runs, and therefore, potentially their cost. In this release, we support running tests with the Windows Server operating system only. Linux support will be available in a future release.
 
@@ -9,7 +9,7 @@ You can find an introduction to the Batch service in the [Basics of Azure Batch]
 
 This plugin is available in the Jenkins plugin manager. To install the plugin in Jenkins, go to:
 
-**Manage Jenkins** > **Manage Plugins** > **Available** > **Parallel Test Execution Plugin** > **Install**
+**Manage Jenkins** > **Manage Plugins** > **Available** > **Azure Batch Parallel Test Execution Plugin** > **Install**
 
 Restart Jenkins to complete the installation.
 
@@ -70,9 +70,9 @@ You may use https://github.com/azurebatch/azure-mobile-apps-net-server tests to 
 - Install Jenkins server
 - Install [git Jenkins plugin](http://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin)
 - Install xUnit result parser Jenkins plugin, [xUnit plugin](http://wiki.jenkins-ci.org/display/JENKINS/xUnit+Plugin) in below sample.
-- Install Parallel Test Execution Plugin (this plugin).
+- Install Azure Batch Parallel Test Execution Plugin (this plugin).
 
-### Configure Parallel Test Execution Jenkins plugin
+### Configure Azure Batch Parallel Test Execution Jenkins plugin
 
 Go to **Manage Jenkins** > **Configure System** > **Parallel Test Execution with Microsoft Azure Batch**, and fill pre-created Azure Batch and Storage account information. And you may put multiple Batch and Storage account there, and different Jenkins project may use different Batch or Storage account.
 
