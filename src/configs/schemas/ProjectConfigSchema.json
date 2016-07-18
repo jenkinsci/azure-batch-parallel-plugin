@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Parallel testing plugin project config schema.",
+  "description": "Parallel testing Jenkins plugin with Microsoft Azure Batch service. This schema defines the project configs for this plugin.",
+  "properties": {
+    "version": {
+      "type": "string",
+      "title": "Version schema.",
+      "description": "Version of this project config schema, current version is 0.1."
+    },
+    "vmConfigs": {
+      "type": "object",
+      "title": "VmConfigs schema.",
+      "description": "Configs for task VMs. In current version, only Windows VM may be allocated.",
+      "properties": {
+        "numVMs": {
+          "type": "integer",
+          "title": "NumVMs schema.",
+          "description": "Number of VMs to be created."
+        },
+        "maxTasksPerNode": {
+          "type": "integer",
+          "title": "MaxTasksPerNode schema.",
+          "description": "Max tasks allowed running on a VM at same time.",
+          "default": "1"
+        },
+        "osFamily": {
+          "type": "string",
+          "title": "OsFamily schema.",
+          "description": "The Azure Guest OS family to be installed on the virtual machines in the pool. The default value is 4 – OS Family 4, equivalent to Windows Server 2012 R2. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, osFamily element.",
+          "default": "4"
+        },
+        "targetOSVersion": {
+          "type": "string",
+          "title": "TargetOSVersion schema.",
+          "description": "The Azure Guest OS version to be installed on the virtual machines in the pool. The default value is * which specifies the latest operating system version for the specified family. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, targetOSVersion element.",
+          "default": "*"
+        },
+        "vmSize": {
+          "type": "string",
+          "title": "VmSize schema.",
+          "description": "The size of the virtual machine. Default vmSize is small. You may find more information at https://azure.microsoft.com/documentation/articles/cloud-services-sizes-specs/ (ExtraSmall is not supported).",
+          "default": "small"
+        },
+        "poolKeepAlive": {
+          "type": "boolean",
+          "title": "PoolKeepAlive schema.",
+          "description": "Keep the VMs alive after all tests are done. Default is false. You may set to true if you want VMs alive for debugging purpose.",
+          "default": false
+        },
+        "vmSetupCommandLine": {
+          "type": "string",
+          "title": "VmSetupCommandLine schema.",
+          "description": "CommandLine to setup VM. This command will be run before any tests.",
+          "default": ""
+        }
+      },
+      "required": [
+        "numVMs"
+      ]
+    },
+    "resources": {
+      "type": "object",
+      "title": "Resources schema.",
+      "description": "Resources folders and files will be copied to task VMs under folder %AZ_BATCH_NODE_SHARED_DIR%\\%AZ_BATCH_JOB_ID% before any test running.",
+      "properties": {
+        "localResources": {
+          "type": "array",
+          "title": "LocalResources schema.",
+          "description": "Files and Folders on local disk or remote share.",
+          "items": {
+            "type": "object",
+            "title": "LocalResource schema.",
+            "description": "File or Folder on local disk or remote share.",
+            "properties": {
+              "source": {
+                "type": "string",
+                "title": "Source schema.",
+                "description": "File or folder's absolute path or relative path to Jenkins WORKSPACE folder."
+              }
+            },
+            "required": [
+              "source"
+            ]
+          }
+        },
+        "azureStorageBlobs": {
+          "type": "array",
+          "title": "AzureStorageBlobs schema.",
+          "description": "Azure storage blob resources.",
+          "items": {
+            "type": "object",
+            "title": "AzureStorageBlob schema.",
+            "description": "Azure storage blob resource.",
+            "properties": {
+              "blob": {
+                "type": "string",
+                "title": "Blob schema.",
+                "description": "The Azure storage blob path, which may not contain SAS."
+              },
+              "sas": {
+                "type": "string",
+                "title": "SAS schema.",
+                "description": "The Azure storage container/blob SAS for this blob. If not specified, plugin will try to generate container SAS for this blob with configured storage accouts. If it's public resourece, you may specify empty string as SAS."
+              },
+              "unzip": {
+                "type": "boolean",
+                "title": "Unzip schema.",
+                "description": "Set to true if you want to unzip this blob on task VM. Default is false.",
+                "default": false
+              }
+            },
+            "required": [
+              "blob"
+            ]
+          }
+        }
+      },
+      "required": [
+      ]
+    },
+    "testConfigs": {
+      "type": "object",
+      "title": "TestConfigs schema.",
+      "description": "Test related configs.",
+      "properties": {
+        "resultFilePatterns": {
+          "type": "array",
+          "title": "ResultFilePatterns schema.",
+          "description": "Patterns of result files which will be downloaded to Jenkins server.",
+          "items": {
+            "type": "string",
+            "title": "ResultFilePattern schema.",
+            "description": "Pattern of result file."
+          }
+        },
+        "resultFilesSaveToFolder": {
+          "type": "string",
+          "title": "ResultFilesSaveToFolder schema.",
+          "description": "The folder name of results files to be downloaded to Jenkins server.",
+          "default": "azurebatchtemp\\results"
+        }
+      },
+      "required": [
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "vmConfigs"
+  ]
+}

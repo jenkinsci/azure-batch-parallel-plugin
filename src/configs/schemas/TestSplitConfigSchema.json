@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Parallel testing plugin test split config schema.",
+  "description": "Parallel testing Jenkins plugin with Microsoft Azure Batch service. This schema defines the test split configs for this plugin.",
+  "properties": {
+    "version": {
+      "type": "string",
+      "title": "Version schema.",
+      "description": "Version of this project config schema, current version is 0.1."
+    },
+    "taskCommandDictionary": {
+      "type": "array",
+      "title": "TaskCommandDictionary schema.",
+      "description": "TaskCommandDictionary to define the phrases to be replaced in jobConfigs-tasks-commands.",
+      "items": {
+        "type": "object",
+        "title": "TaskCommandDictionary schema.",
+        "description": "TaskCommandDictionary to define the phrases to be replaced in jobConfigs-tasks-commands.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key schema.",
+            "description": "The string to be replaced."
+          },
+          "value": {
+            "type": "string",
+            "title": "Value schema.",
+            "description": "The string to replace the key string."
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      }
+    },
+    "jobConfigs": {
+      "type": "object",
+      "title": "JobConfigs schema.",
+      "description": "Test job configs.",
+      "properties": {
+        "jobTimeoutInMinutes": {
+          "type": "integer",
+          "title": "JobTimeoutInMinutes schema.",
+          "description": "The whole job time out in minutes."
+        },
+        "defaultTaskTimeoutInMinutes": {
+          "type": "integer",
+          "title": "DefaultTaskTimeoutInMinutes schema.",
+          "description": "Default timeout in minutes for task."
+        },
+        "tasks": {
+          "type": "array",
+          "title": "Tasks schema.",
+          "description": "Tasks to run on VM.",
+          "items": {
+            "type": "object",
+            "title": "Task schema.",
+            "description": "Task to run on VM.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name schema.",
+                "description": "Name of the task. If not specified, will use Task #index, for example, Task #1."
+              },
+              "commands": {
+                "type": "array",
+                "title": "Commands schema.",
+                "description": "The commandlines to run on VM.",
+                "items": {
+                  "type": "string",
+                  "title": "Command schema.",
+                  "description": "The commandline to run on VM."
+                }
+              },
+              "timeOutMinutes": {
+                "type": "integer",
+                "title": "TimeOutMinutes schema.",
+                "description": "Timeout in minutes of task. If not specified, will use defaultTaskTimeoutInMinutes."
+              }
+            },
+            "required": [
+              "commands"
+            ]
+          }
+        }
+      },
+      "required": [
+        "jobTimeoutInMinutes",
+        "defaultTaskTimeoutInMinutes",
+        "tasks"
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "jobConfigs"
+  ]
+}

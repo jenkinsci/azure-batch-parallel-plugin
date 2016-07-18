@@ -1,0 +1,35 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!--
+    Creates a text field that shows the value of the "name" property.
+    When submitted, it will be passed to the corresponding constructor parameter.
+  -->
+  
+  <f:entry title="Batch Account" field="batchAccount" help="/plugin/parallel-azure-batch/help-configBatchAccount.html">
+    <f:select />
+  </f:entry>
+
+  <f:entry title="Storage Account" field="storageAccount" help="/plugin/parallel-azure-batch/help-configStorageAccount.html">
+    <f:select />
+  </f:entry>
+
+  <f:entry title="Parallel Test Project Config File" field="projectConfigFilePath" help="/plugin/parallel-azure-batch/help-configProjectConfig.html">
+    <f:textbox />
+  </f:entry>
+
+  <f:entry title="Parallel Test Split Config File" field="splitConfigFilePath" help="/plugin/parallel-azure-batch/help-configTestSplitConfig.html">
+    <f:textbox />
+  </f:entry>
+
+  <f:entry title="Enable VM Utilization Profiler" field="enableVmUtilizationProfiler" help="/plugin/parallel-azure-batch/help-configEnableUtilizationProfiler.html">
+    <f:checkbox default="false" />
+  </f:entry>
+
+</j:jelly>
+

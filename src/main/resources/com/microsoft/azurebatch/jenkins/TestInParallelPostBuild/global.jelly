@@ -1,0 +1,91 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+  This Jelly script is used to produce the global configuration option.
+
+  Jenkins uses a set of tag libraries to provide uniformity in forms.
+  To determine where this tag is defined, first check the namespace URI,
+  and then look under $JENKINS/views/. For example, <f:section> is defined
+  in $JENKINS/views/lib/form/section.jelly.
+
+  It's also often useful to just check other similar scripts to see what
+  tags they use. Views are always organized according to its owner class,
+  so it should be straightforward to find them.
+-->
+  <f:section title="${%ParallelTestingPlugConfig_title}" id="windows-azure-batch">
+    <f:entry title="${%entry_batch_account_title}" >
+      <f:repeatable var="batchAccountConfig" items="${descriptor.batchAccounts}" noAddButton="true" minimum="1">
+        <table width="100%">
+          <f:entry title="${%rep_batchAccountFriendlyName}" help="/plugin/parallel-azure-batch/help-globalBatchAccountFriendlyName.html" field="friendlyName">
+            <f:textbox value="${batchAccountConfig.friendlyName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_batchAccountName}" help="/plugin/parallel-azure-batch/help-globalBatchAccountName.html" field="accountName">
+            <f:textbox value="${batchAccountConfig.accountName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_batchAccountKey}" help="/plugin/parallel-azure-batch/help-globalBatchAccountKey.html" field="accountKey">
+            <f:password value="${batchAccountConfig.accountKey}" />
+          </f:entry>
+
+          <f:entry title="${%rep_batchServiceURL}" help="/plugin/parallel-azure-batch/help-globalBatchServiceURL.html" field="serviceURL">
+            <f:textbox value="${batchAccountConfig.serviceURL}"/>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="right">
+              <f:validateButton
+                      title="${%rep_val_btn}" progress="${%rep_val_btn_msg}"
+                      method="checkBatchAccountConfig" with="friendlyName,accountName,accountKey,serviceURL" />
+            </div>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="left">
+              <input type="button" value="${%rep_del_btn}" class="repeatable-delete show-if-not-only" style="margin-left: 1em;" />
+              <input type="button" value="${%rep_addmore_btn}" class="repeatable-add show-if-last" />
+            </div>
+
+          </f:entry>
+
+        </table>
+      </f:repeatable>
+    </f:entry>
+    <f:entry title="${%entry_storage_account_title}" >
+      <f:repeatable var="storageAccountConfig" items="${descriptor.storageAccounts}" noAddButton="true" minimum="1">
+        <table width="100%">
+          <f:entry title="${%rep_storageAccountFriendlyName}" help="/plugin/parallel-azure-batch/help-globalStorageAccountFriendlyName.html" field="friendlyName">
+            <f:textbox value="${storageAccountConfig.friendlyName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_storageAccount}" help="/plugin/parallel-azure-batch/help-globalStorageAccountName.html" field="accountName">
+            <f:textbox value="${storageAccountConfig.accountName}" />
+          </f:entry>
+
+          <f:entry title="${%rep_storageAccountKey}" help="/plugin/parallel-azure-batch/help-globalStorageAccountKey.html" field="accountKey">
+            <f:password value="${storageAccountConfig.accountKey}" />
+          </f:entry>
+
+          <f:entry title="${%rep_endpointDomain}" help="/plugin/parallel-azure-batch/help-globalStorageEndpointDomain.html" field="endpointDomain">
+            <f:textbox value="${storageAccountConfig.endpointDomain}" default="core.windows.net"/>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="right">
+              <f:validateButton
+                      title="${%rep_val_storage_btn}" progress="${%rep_val_btn_msg}"
+                      method="checkStorageAccountConfig" with="friendlyName,accountName,accountKey,endpointDomain" />
+            </div>
+          </f:entry>
+
+          <f:entry title="">
+            <div align="left">
+              <input type="button" value="${%rep_del_btn}" class="repeatable-delete show-if-not-only" style="margin-left: 1em;" />
+              <input type="button" value="${%rep_addmorestorage_btn}" class="repeatable-add show-if-last" />
+            </div>
+          </f:entry>
+        </table>
+      </f:repeatable>
+    </f:entry>
+  </f:section>
+</j:jelly>
