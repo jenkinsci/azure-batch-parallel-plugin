@@ -37,22 +37,22 @@
         </license>
     </licenses>
 
-    <!-- If you want this to appear on the wiki page:
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <name>Jun Guan</name>
+        <email>junguan@microsoft.com</email>
+      </developer>
+      <developer>
+        <name>Mohammad Minhaz</name>
+        <email>mominhaz@microsoft.com</email>
       </developer>
     </developers>
-    -->
-    <!-- Assuming you want to host on @jenkinsci:
+
    <scm>
-     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
+     <connection>scm:git:git://github.com/jenkinsci/azure-batch-parallel-plugin.git</connection>
+     <developerConnection>scm:git:git@github.com:jenkinsci/azure-batch-parallel-plugin.git</developerConnection>
+     <url>http://github.com/jenkinsci/azure-batch-parallel-plugin</url>
    </scm>
-    -->
 
     <repositories>
         <repository>
