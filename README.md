@@ -120,7 +120,7 @@ Several factors can impact the total test run duration, and therefore the **tota
 - **Number of VMs**: More VMs will result in greater parallel distribution, however, it might also add time (and therefore cost) to VM setup and deletion.
 - **Test split**: An even test split will help reduce the total test run duration and cost. However, a test group that is too small can be inefficient since task scheduling and test log uploading might be a relatively large overhead compared to the tests themselves.
 
-In the end, you should to tune VM and test split configurations to find the right balance of time and cost for your own tests. Based on the above discussion, here is a summary of our recommendations:
+In the end, you should tune VM and test split configurations to find the right balance of time and cost for your own tests. Based on the above discussion, here is a summary of our recommendations:
 
 - Choose a VM spec that fits your tests
 - Minimize resource size
@@ -131,7 +131,7 @@ In the end, you should to tune VM and test split configurations to find the righ
 
 ## Cost factors
 
-Besides above **computaton cost** (or **total core hours**), there may be additonal storage and data transfer cost incurred by the test run. Below is a summary of our recommendations to minimize these costs:
+Besides above **computation cost** (or **total core hours**), there may be additional storage and data transfer cost incurred by the test run. Below is a summary of our recommendations to minimize these costs:
 
 - Have Batch account and Storage account in same region
 - Minimize resource size
