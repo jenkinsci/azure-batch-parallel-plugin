@@ -36,8 +36,8 @@ Add a post-build action "Execute tests in parallel with Microsoft Azure Batch" t
 
 1. **Batch Account**: Choose one Azure Batch account from the accounts configured in Global configuration
 2. **Storage Account**: Choose one Azure Storage account from the accounts configured in Global configuration
-3. **Parallel Test Project Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load VM, resource, and test configurations from this config file. You can review the [project config file schema](To be filled after released) and see a [sample project config schema](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleProjectSettings.json) for the `azure-mobile-apps-net-server` tests.
-4. **Parallel Test Split Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load task split configurations from this config file. You can review the [task split config file schema](To be filled after released) and see a [sample task split config schema](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleSplitterConfig.json) for the `azure-mobile-apps-net-server` tests.
+3. **Parallel Test Project Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load VM, resource, and test configurations from this config file. You can review the [project config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/ProjectConfigSchema.json) and see a [sample project config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleProjectSettings.json) for the `azure-mobile-apps-net-server` tests.
+4. **Parallel Test Split Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load task split configurations from this config file. You can review the [task split config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/TestSplitConfigSchema.json) and see a [sample task split config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleSplitterConfig.json) for the `azure-mobile-apps-net-server` tests.
 5. **Enable VM Utilization Profiler**: Check this option if you want to enable the VM Utilization Profiler to help fine tune the VM and test split configuration.
 
 # How this plugin works
@@ -103,6 +103,7 @@ Build the job "Job1", and it should result in a successful build and you should 
 To achieve a better balance of test run time and cost, you might need to tune the VM and test split configurations; the below information will be helpful for this process.
 
 The test run can be divided into the following stages:
+
 1. **Create pool of VMs and start VMs**: This plugin will create a pool of VMs of the spec defined in the "vmConfigs" section of Parallel Test Project Config File. You aren't charged for a VM until it has been started.
 2. **Download and process resources**: The Batch service will download the resources you specify in the "resources" section of Parallel Test Project Config File to each VM, unzip if necessary, and copy them to the `%AZ_BATCH_NODE_SHARED_DIR%\\%AZ_BATCH_JOB_ID%` folder on each VM for Windows. (NOTE: You can find more information about this folder and VM environment settings in the [Batch feature overview for developers](https://azure.microsoft.com/documentation/articles/batch-api-basics/).)
 3. **Run VM setup task**: The Batch service will run the VM setup command line specified in the "vmConfigs" section of Parallel Test Project Config File.
@@ -180,7 +181,7 @@ is an example:
 As you can see from above example, at timestamp `2016/07/13 17:53:02`, 1 VM is *preparing*. At timestamp `2016/07/13 17:56:02` a VM is *leaving*.
 
 # Help
-If you encounter any bugs with this plugin, please file issues via [Issues](To be filled after released).
+If you encounter any bugs with this plugin, please file issues via [Issues](https://github.com/jenkinsci/azure-batch-parallel-plugin/issues).
 
 # Contribute
 
