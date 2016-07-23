@@ -1,6 +1,6 @@
-# Azure Batch Parallel Test Execution Jenkins plugin
+# Azure Batch Parallel Test Execution Jenkins Plugin
 
-This Jenkins post-build plugin allows you to execute tests in parallel with the Microsoft Azure Batch service, and can reduce the duration of your test runs, and therefore, potentially their cost. In this release, we support running tests with the Windows Server operating system only. Linux support will be available in a future release.
+This Jenkins post-build plugin allows you to execute tests in parallel with the Microsoft Azure Batch service, and can reduce the duration of your test runs, and therefore, potentially the cost. In this release, we support running tests with the Windows Server operating system only. Linux support will be available in a future release.
 
 Azure Batch enables you to run parallel applications efficiently in the cloud. It's a platform service that schedules tasks to run on a managed collection of virtual machines.
 You can find an introduction to the Batch service in the [Basics of Azure Batch](https://azure.microsoft.com/documentation/articles/batch-technical-overview/).
@@ -197,3 +197,5 @@ If you would like to become an active contributor to this project, please follow
 * [Azure Batch documentation](https://azure.microsoft.com/documentation/services/batch/)
 * If you don't already have one, you can create a [FREE Microsoft Azure account](http://go.microsoft.com/fwlink/?LinkId=330212).
 
+# Release Notes
+Release notes and changelog are at [here](https://github.com/jenkinsci/azure-batch-parallel-plugin/wiki).
