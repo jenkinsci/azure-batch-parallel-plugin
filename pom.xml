@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>com.microsoft.azurebatch</groupId>
-    <artifactId>parallel-azure-batch</artifactId>
+    <artifactId>azure-batch-parallel</artifactId>
     <version>0.1</version>
     <packaging>hpi</packaging>
 
@@ -26,7 +26,7 @@
 
     <name>Azure Batch Parallel Test Execution Plugin</name>
     <description>Execute tests in parallel with Microsoft Azure Batch service.</description>
-    <url>https://azure.microsoft.com/en-us/documentation/services/batch/</url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Azure+Batch+Parallel+Test+Execution+Plugin</url>
 
     <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
 
@@ -37,22 +37,22 @@
         </license>
     </licenses>
 
-    <!-- If you want this to appear on the wiki page:
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <name>Jun Guan</name>
+        <email>junguan@microsoft.com</email>
+      </developer>
+      <developer>
+        <name>Mohammad Minhaz</name>
+        <email>mominhaz@microsoft.com</email>
       </developer>
     </developers>
-    -->
-    <!-- Assuming you want to host on @jenkinsci:
+
    <scm>
-     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
+     <connection>scm:git:git://github.com/jenkinsci/azure-batch-parallel-plugin.git</connection>
+     <developerConnection>scm:git:git@github.com:jenkinsci/azure-batch-parallel-plugin.git</developerConnection>
+     <url>http://github.com/jenkinsci/azure-batch-parallel-plugin</url>
    </scm>
-    -->
 
     <repositories>
         <repository>
