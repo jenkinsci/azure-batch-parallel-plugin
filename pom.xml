@@ -60,7 +60,7 @@
             <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
 
-        <repository>
+<!--        <repository>
             <id>adx-snapshots</id>
             <name>Azure ADX Snapshots</name>
             <url>http://adxsnapshots.azurewebsites.net/</url>
@@ -69,6 +69,13 @@
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
+        </repository>
+        -->
+        <repository>
+            <id>commicrosoftazure-1343</id>
+            <name>1343 staging repo</name>
+            <url>https://oss.sonatype.org/service/local/repositories/commicrosoftazure-1343/content</url>
+            <layout>default</layout>
         </repository>
 
         <repository>
@@ -131,7 +138,7 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-batch</artifactId>
-            <version>1.0.0-20160503.003742-2</version>
+            <version>1.0.0-beta2</version>
         </dependency>
         
         <dependency>
