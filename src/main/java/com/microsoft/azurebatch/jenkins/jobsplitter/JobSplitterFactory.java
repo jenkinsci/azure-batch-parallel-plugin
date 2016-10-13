@@ -6,18 +6,14 @@
 
 package com.microsoft.azurebatch.jenkins.jobsplitter;
 
+import com.google.gson.Gson;
 import com.microsoft.azurebatch.jenkins.jobsplitter.autogen.JobSplitter;
 import com.microsoft.azurebatch.jenkins.jobsplitter.autogen.Task;
-import com.google.gson.Gson;
 import com.microsoft.azurebatch.jenkins.logger.Logger;
 import com.microsoft.azurebatch.jenkins.utils.Utils;
 import hudson.model.BuildListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InvalidObjectException;
-import java.io.Reader;
+
+import java.io.*;
 import java.nio.charset.Charset;
 
 /**

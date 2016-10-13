@@ -7,47 +7,44 @@
 package com.microsoft.azurebatch.jenkins;
 
 import com.microsoft.azure.batch.BatchErrorCodeStrings;
-import com.microsoft.azurebatch.jenkins.projectconfig.ProjectConfigHelper;
-import com.microsoft.azurebatch.jenkins.jobsplitter.JobSplitterHelper;
-import com.microsoft.azurebatch.jenkins.utils.ZipHelper;
-import com.microsoft.azurebatch.jenkins.utils.Utils;
+import com.microsoft.azure.batch.protocol.models.*;
 import com.microsoft.azurebatch.jenkins.azurebatch.AzureBatchHelper;
 import com.microsoft.azurebatch.jenkins.azurebatch.BatchAccountInfo;
 import com.microsoft.azurebatch.jenkins.azurestorage.AzureStorageHelper;
 import com.microsoft.azurebatch.jenkins.azurestorage.StorageAccountInfo;
+import com.microsoft.azurebatch.jenkins.jobsplitter.JobSplitterHelper;
 import com.microsoft.azurebatch.jenkins.logger.Logger;
-import com.microsoft.azure.batch.protocol.models.*;
+import com.microsoft.azurebatch.jenkins.projectconfig.ProjectConfigHelper;
 import com.microsoft.azurebatch.jenkins.resource.AzureBlobResourceEntity;
 import com.microsoft.azurebatch.jenkins.resource.ResourceEntity;
+import com.microsoft.azurebatch.jenkins.utils.Utils;
 import com.microsoft.azurebatch.jenkins.utils.WorkspaceHelper;
+import com.microsoft.azurebatch.jenkins.utils.ZipHelper;
 import com.microsoft.windowsazure.storage.StorageException;
-
 import com.microsoft.windowsazure.storage.blob.CloudBlobContainer;
-import hudson.Launcher;
 import hudson.Extension;
+import hudson.Launcher;
 import hudson.model.*;
 import hudson.model.BuildListener;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
+import hudson.tasks.Recorder;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
 import net.sf.json.JSONObject;
-
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.security.InvalidKeyException;
-
 import java.util.concurrent.TimeoutException;
 
 /**

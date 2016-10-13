@@ -6,14 +6,15 @@
 
 package com.microsoft.azurebatch.jenkins.resource;
 
-import com.microsoft.azurebatch.jenkins.utils.ZipHelper;
 import com.microsoft.azurebatch.jenkins.azurestorage.AzureStorageHelper;
 import com.microsoft.azurebatch.jenkins.logger.Logger;
+import com.microsoft.azurebatch.jenkins.utils.ZipHelper;
 import com.microsoft.windowsazure.storage.StorageException;
 import com.microsoft.windowsazure.storage.blob.CloudBlobContainer;
 import com.microsoft.windowsazure.storage.blob.CloudBlockBlob;
 import hudson.FilePath;
 import hudson.model.BuildListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -67,27 +68,6 @@ public class ResourceEntityHelper {
             File file = new File(srcPath);
             file.deleteOnExit();
         }            
-    }
-    
-    /**
-     * Generate extract ResourceEntity command on VM
-     * @param resource resource entity
-     * @param unzipUsePythonFileName the script file name to unzip file using Python
-     * @return extract ResourceEntity command on VM
-     */
-    public static String generateExtractResourceEntityCommandOnVM(ResourceEntity resource, String unzipUsePythonFileName) {
-        // @resource is in JobPrep task folder. The actual file is resource.getBlobName(), 
-        // we need to extract it if it's zipped folder, and copy to %AZ_BATCH_NODE_SHARED_DIR%\%AZ_BATCH_JOB_ID%.
-        String command = null;
-        final String binaryFolderOnVM = "%AZ_BATCH_NODE_SHARED_DIR%\\%AZ_BATCH_JOB_ID%";
-        if (resource.requireUnzip()) {
-            // resource.getBlobName() is FolderName.zip, extract it to %AZ_BATCH_NODE_SHARED_DIR%\%AZ_BATCH_JOB_ID%
-            command = String.format("cmd /c \"%s %s %s\"", unzipUsePythonFileName, resource.getBlobName(), binaryFolderOnVM);
-        } else {
-            // Simply copy resource.getBlobName() to %AZ_BATCH_NODE_SHARED_DIR%\%AZ_BATCH_JOB_ID%
-            command = String.format("copy \"%s\" %s /Y", resource.getBlobName(), binaryFolderOnVM);
-        }        
-        return command;
     }
     
     private static String zipLocalResourceEntity(BuildListener listener, LocalResourceEntity resource, String outputFolder) throws IllegalArgumentException, IOException {

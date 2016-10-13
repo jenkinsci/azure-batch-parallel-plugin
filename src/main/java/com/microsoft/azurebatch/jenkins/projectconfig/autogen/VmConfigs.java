@@ -40,32 +40,32 @@ public class VmConfigs {
     @Expose
     private int maxTasksPerNode = 1;
     /**
-     * OsFamily schema.
-     * <p>
-     * The Azure Guest OS family to be installed on the virtual machines in the pool. The default value is 4 – OS Family 4, equivalent to Windows Server 2012 R2. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, osFamily element.
-     * 
-     */
-    @SerializedName("osFamily")
-    @Expose
-    private String osFamily = "4";
-    /**
-     * TargetOSVersion schema.
-     * <p>
-     * The Azure Guest OS version to be installed on the virtual machines in the pool. The default value is * which specifies the latest operating system version for the specified family. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, targetOSVersion element.
-     * 
-     */
-    @SerializedName("targetOSVersion")
-    @Expose
-    private String targetOSVersion = "*";
-    /**
      * VmSize schema.
      * <p>
-     * The size of the virtual machine. Default vmSize is small. You may find more information at https://azure.microsoft.com/documentation/articles/cloud-services-sizes-specs/ (ExtraSmall is not supported).
+     * The size of the virtual machines in the pool. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, element vmSize.
      * 
      */
     @SerializedName("vmSize")
     @Expose
-    private String vmSize = "small";
+    private String vmSize;
+    /**
+     * CloudServiceConfig schema.
+     * <p>
+     * The cloud service configuration for the pool, for Azure PaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section.
+     * 
+     */
+    @SerializedName("cloudServiceConfig")
+    @Expose
+    private CloudServiceConfig cloudServiceConfig;
+    /**
+     * VirtualMachineConfig schema.
+     * <p>
+     * The virtual machine configuration for the pool, for Azure IaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, virtualMachineConfiguration section.
+     * 
+     */
+    @SerializedName("virtualMachineConfig")
+    @Expose
+    private VirtualMachineConfig virtualMachineConfig;
     /**
      * PoolKeepAlive schema.
      * <p>
@@ -136,57 +136,9 @@ public class VmConfigs {
     }
 
     /**
-     * OsFamily schema.
-     * <p>
-     * The Azure Guest OS family to be installed on the virtual machines in the pool. The default value is 4 – OS Family 4, equivalent to Windows Server 2012 R2. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, osFamily element.
-     * 
-     * @return
-     *     The osFamily
-     */
-    public String getOsFamily() {
-        return osFamily;
-    }
-
-    /**
-     * OsFamily schema.
-     * <p>
-     * The Azure Guest OS family to be installed on the virtual machines in the pool. The default value is 4 – OS Family 4, equivalent to Windows Server 2012 R2. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, osFamily element.
-     * 
-     * @param osFamily
-     *     The osFamily
-     */
-    public void setOsFamily(String osFamily) {
-        this.osFamily = osFamily;
-    }
-
-    /**
-     * TargetOSVersion schema.
-     * <p>
-     * The Azure Guest OS version to be installed on the virtual machines in the pool. The default value is * which specifies the latest operating system version for the specified family. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, targetOSVersion element.
-     * 
-     * @return
-     *     The targetOSVersion
-     */
-    public String getTargetOSVersion() {
-        return targetOSVersion;
-    }
-
-    /**
-     * TargetOSVersion schema.
-     * <p>
-     * The Azure Guest OS version to be installed on the virtual machines in the pool. The default value is * which specifies the latest operating system version for the specified family. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section, targetOSVersion element.
-     * 
-     * @param targetOSVersion
-     *     The targetOSVersion
-     */
-    public void setTargetOSVersion(String targetOSVersion) {
-        this.targetOSVersion = targetOSVersion;
-    }
-
-    /**
      * VmSize schema.
      * <p>
-     * The size of the virtual machine. Default vmSize is small. You may find more all available vmSize at https://azure.microsoft.com/documentation/articles/cloud-services-sizes-specs/ (ExtraSmall is not supported).
+     * The size of the virtual machines in the pool. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, element vmSize.
      * 
      * @return
      *     The vmSize
@@ -198,13 +150,61 @@ public class VmConfigs {
     /**
      * VmSize schema.
      * <p>
-     * The size of the virtual machine. Default vmSize is small. You may find more all available vmSize at https://azure.microsoft.com/documentation/articles/cloud-services-sizes-specs/ (ExtraSmall is not supported).
+     * The size of the virtual machines in the pool. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, element vmSize.
      * 
      * @param vmSize
      *     The vmSize
      */
     public void setVmSize(String vmSize) {
         this.vmSize = vmSize;
+    }
+
+    /**
+     * CloudServiceConfig schema.
+     * <p>
+     * The cloud service configuration for the pool, for Azure PaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section.
+     * 
+     * @return
+     *     The cloudServiceConfig
+     */
+    public CloudServiceConfig getCloudServiceConfig() {
+        return cloudServiceConfig;
+    }
+
+    /**
+     * CloudServiceConfig schema.
+     * <p>
+     * The cloud service configuration for the pool, for Azure PaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section.
+     * 
+     * @param cloudServiceConfig
+     *     The cloudServiceConfig
+     */
+    public void setCloudServiceConfig(CloudServiceConfig cloudServiceConfig) {
+        this.cloudServiceConfig = cloudServiceConfig;
+    }
+
+    /**
+     * VirtualMachineConfig schema.
+     * <p>
+     * The virtual machine configuration for the pool, for Azure IaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, virtualMachineConfiguration section.
+     * 
+     * @return
+     *     The virtualMachineConfig
+     */
+    public VirtualMachineConfig getVirtualMachineConfig() {
+        return virtualMachineConfig;
+    }
+
+    /**
+     * VirtualMachineConfig schema.
+     * <p>
+     * The virtual machine configuration for the pool, for Azure IaaS VMs. You may find more information at https://msdn.microsoft.com/library/azure/dn820174.aspx, virtualMachineConfiguration section.
+     * 
+     * @param virtualMachineConfig
+     *     The virtualMachineConfig
+     */
+    public void setVirtualMachineConfig(VirtualMachineConfig virtualMachineConfig) {
+        this.virtualMachineConfig = virtualMachineConfig;
     }
 
     /**

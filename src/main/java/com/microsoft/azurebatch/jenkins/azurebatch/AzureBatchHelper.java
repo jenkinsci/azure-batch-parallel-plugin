@@ -6,34 +6,15 @@
 
 package com.microsoft.azurebatch.jenkins.azurebatch;
 
-import com.microsoft.azurebatch.jenkins.logger.Logger;
 import com.microsoft.azure.batch.*;
 import com.microsoft.azure.batch.auth.BatchSharedKeyCredentials;
-import com.microsoft.azure.batch.protocol.models.AllocationState;
-import com.microsoft.azure.batch.protocol.models.AutoPoolSpecification;
-import com.microsoft.azure.batch.protocol.models.BatchErrorException;
-import com.microsoft.azure.batch.protocol.models.CloudJob;
-import com.microsoft.azure.batch.protocol.models.CloudPool;
-import com.microsoft.azure.batch.protocol.models.CloudServiceConfiguration;
-import com.microsoft.azure.batch.protocol.models.CloudTask;
-import com.microsoft.azure.batch.protocol.models.ComputeNode;
-import com.microsoft.azure.batch.protocol.models.ComputeNodeDeallocationOption;
-import com.microsoft.azure.batch.protocol.models.ComputeNodeState;
-import com.microsoft.azure.batch.protocol.models.JobAddParameter;
-import com.microsoft.azure.batch.protocol.models.JobConstraints;
-import com.microsoft.azure.batch.protocol.models.JobPatchParameter;
-import com.microsoft.azure.batch.protocol.models.JobPreparationAndReleaseTaskExecutionInformation;
-import com.microsoft.azure.batch.protocol.models.JobPreparationTaskExecutionInformation;
-import com.microsoft.azure.batch.protocol.models.JobPreparationTaskState;
-import com.microsoft.azure.batch.protocol.models.PoolInformation;
-import com.microsoft.azure.batch.protocol.models.PoolLifetimeOption;
-import com.microsoft.azure.batch.protocol.models.PoolSpecification;
-import com.microsoft.azure.batch.protocol.models.TaskExecutionInformation;
-import com.microsoft.azure.batch.protocol.models.TaskSchedulingError;
-import com.microsoft.azure.batch.protocol.models.TaskState;
+import com.microsoft.azure.batch.protocol.models.*;
+import com.microsoft.azurebatch.jenkins.azurebatch.jobgen.JobGenerator;
+import com.microsoft.azurebatch.jenkins.azurebatch.jobgen.JobGeneratorFactory;
 import com.microsoft.azurebatch.jenkins.azurestorage.AzureStorageHelper;
 import com.microsoft.azurebatch.jenkins.azurestorage.StorageAccountInfo;
 import com.microsoft.azurebatch.jenkins.jobsplitter.JobSplitterHelper;
+import com.microsoft.azurebatch.jenkins.logger.Logger;
 import com.microsoft.azurebatch.jenkins.projectconfig.ProjectConfigHelper;
 import com.microsoft.azurebatch.jenkins.projectconfig.autogen.VmConfigs;
 import com.microsoft.azurebatch.jenkins.resource.ResourceEntity;
@@ -42,29 +23,19 @@ import com.microsoft.azurebatch.jenkins.utils.WorkspaceHelper;
 import com.microsoft.windowsazure.storage.StorageException;
 import com.microsoft.windowsazure.storage.blob.CloudBlobContainer;
 import hudson.model.BuildListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.OutputStream;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
+
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
-import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
 
 /**
  * Azure Batch Helper class.
@@ -85,6 +56,7 @@ public class AzureBatchHelper {
     private final BatchClient client;
     private final String taskLogDirPath;
     private final Set<String> retrievedTasks = new HashSet<>();
+    private boolean isJobRunningOnWindows = true;
     
     // Batch auto pool Id prefix
     private static final String autoPoolIdPrefix = "jenkinspool";
@@ -185,15 +157,8 @@ public class AzureBatchHelper {
         // When tasks are added, we extend the pool's lifetime to ensure that all the tasks can be completed.
         int poolLifeTimeBeforeTasksAddedInMinutes = 3 * 60;
 
-        // Create an auto pool for the job.
-        VmConfigs vmConfigs = projectConfigHelper.getVMConfigs();
-        createJobWithAutoPool(vmConfigs.getOsFamily(), 
-                vmConfigs.getTargetOSVersion(), 
-                vmConfigs.getNumVMs(), 
-                vmConfigs.getVmSize(), 
-                vmConfigs.isPoolKeepAlive(), 
-                vmConfigs.getMaxTasksPerNode(),
-                poolLifeTimeBeforeTasksAddedInMinutes);
+        // Create an auto pool for the job.    
+        createJobWithAutoPool(projectConfigHelper.getVMConfigs(), poolLifeTimeBeforeTasksAddedInMinutes);
 
         String poolId = client.jobOperations().getJob(poolJobId).executionInfo().poolId();
 
@@ -208,8 +173,10 @@ public class AzureBatchHelper {
         String containerSasKey = AzureStorageHelper.getContainerSas(listener, storageContainer, containerSasExpirationInMins);
         
         // Create working job with tasks
-        JobGenerator jobGenerator = new JobGenerator(listener, workspaceHelper, projectConfigHelper, jobSplitterHelper, sharedResourceEntityList,
+        JobGenerator jobGenerator = JobGeneratorFactory.CreateJobGenerator(isJobRunningOnWindows);
+        jobGenerator.Initialize(listener, workspaceHelper, projectConfigHelper, jobSplitterHelper, sharedResourceEntityList, 
                 client, jobId, poolId, storageAccountInfo, containerSasKey);
+        
         jobGenerator.createJobWithTasks(jobSplitterHelper.getJobTimeoutInMinutes());
 
         // Extend poolJob (the autopool) timeout long enough to run the actual job.
@@ -290,48 +257,84 @@ public class AzureBatchHelper {
         BatchSharedKeyCredentials cred = new BatchSharedKeyCredentials(batchServiceUrl, batchAccount, batchAccountKey);
         
         Logger.log(listener, "Creating Azure Batch client with account %s batchServiceUrl %s", batchAccount, batchServiceUrl);
+
         return BatchClient.open(cred);
-    }
-        
+    }    
+    
     /**
      * Create an pool via creating a Batch job with auto pool. We set an initial timeout for the pool life, and will extend it to add 
      * extra timeout from the task job. We use auto pool to help manage the life cycle of pool, so even when Jenkins server has some
      * issue, the life cycle of pool will be limited, and customers won't be charged for that. Creating pool and VMs could be time consuming,
      * we use a separate pool job to create pool at earliest possible, and in future, we plan to allow customers to create pool in earlier
      * step in Jenkins project, say, during building step, which will help improve the start up experience.
-     * @param poolSpecOsFamily Os Family
-     * @param poolSpecTargetOSVersion Target OS version, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
-     * @param poolSpecTargetDedicated Target dedicated, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
-     * @param poolSpecVmSize VM size, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
-     * @param poolSpecAutoPoolKeepAlive Keep auto pool alive, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
-     * @param poolSpecMaxTasksPerNode Max tasks per VM, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
-     * @param poolTimeoutInMin Timeout in minutes of the pool, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
+     * The pool can be PaaS or IaaS pool, see more <a href="https://azure.microsoft.com/documentation/articles/batch-api-basics/">here</a>
+     * @param vmConfigs
+     * @param poolTimeoutInMin
      * @throws BatchErrorException
      * @throws IOException
      * @throws InterruptedException
      * @throws TimeoutException 
      */
     private void createJobWithAutoPool(
-            String poolSpecOsFamily,
-            String poolSpecTargetOSVersion,
-            int poolSpecTargetDedicated,
-            String poolSpecVmSize,
-            boolean poolSpecAutoPoolKeepAlive,
-            int poolSpecMaxTasksPerNode,
+            VmConfigs vmConfigs,
             int poolTimeoutInMin) throws BatchErrorException, IOException, InterruptedException, TimeoutException {  
         Logger.log(listener, "Creating auto pool for poolJob %s", poolJobId);
-
-        Logger.log(listener, "Set CloudServiceConfiguration: OsFamily %s, TargetOSVersion %s", poolSpecOsFamily, poolSpecTargetOSVersion);
-        CloudServiceConfiguration cloudServiceConfiguration = new CloudServiceConfiguration();
-        cloudServiceConfiguration.withOsFamily(poolSpecOsFamily)
-                .withTargetOSVersion(poolSpecTargetOSVersion);        
+        
+        PoolSpecification poolSpecification = new PoolSpecification();
+        
+        if (vmConfigs.getCloudServiceConfig() != null) {
+            // Create a PaaS pool, see more at https://msdn.microsoft.com/library/azure/dn820174.aspx, cloudServiceConfiguration section.
+            
+            String poolSpecOsFamily = vmConfigs.getCloudServiceConfig().getOsFamily();
+            String poolSpecTargetOSVersion = vmConfigs.getCloudServiceConfig().getTargetOSVersion();
+            
+            Logger.log(listener, "Set CloudServiceConfiguration: OsFamily %s, TargetOSVersion %s", poolSpecOsFamily, poolSpecTargetOSVersion);
+            
+            CloudServiceConfiguration cloudServiceConfiguration = new CloudServiceConfiguration();
+            cloudServiceConfiguration.withOsFamily(poolSpecOsFamily)
+                .withTargetOSVersion(poolSpecTargetOSVersion);
+            
+            poolSpecification.withCloudServiceConfiguration(cloudServiceConfiguration);
+        } else if (vmConfigs.getVirtualMachineConfig() != null) {
+            // Create a IaaS pool, see more at https://msdn.microsoft.com/library/azure/dn820174.aspx, virtualMachineConfiguration section.
+            
+            String publisher = vmConfigs.getVirtualMachineConfig().getPublisher();
+            String offer = vmConfigs.getVirtualMachineConfig().getOffer();
+            String sku = vmConfigs.getVirtualMachineConfig().getSku();
+            String version = vmConfigs.getVirtualMachineConfig().getVersion();
+            String nodeAgentSKUId = vmConfigs.getVirtualMachineConfig().getNodeAgentSKUId();
+            
+            ImageReference imageReference = new ImageReference();
+            imageReference.withPublisher(publisher)
+                .withOffer(offer)
+                .withSku(sku)
+                .withVersion(version);            
+            
+            Logger.log(listener, "Set VirtualMachineConfiguration: publisher %s, offer %s, sku %s, version %s, nodeAgentSKUId %s", publisher, offer, sku, version, nodeAgentSKUId);
+            
+            VirtualMachineConfiguration virtualMachineConfiguration = new VirtualMachineConfiguration();
+            virtualMachineConfiguration.withImageReference(imageReference)
+                    .withNodeAgentSKUId(nodeAgentSKUId);
+            
+            poolSpecification.withVirtualMachineConfiguration(virtualMachineConfiguration);
+            
+            // Check if this job will be running on Windows VMs based on nodeAgentSKUId
+            if (!nodeAgentSKUId.toLowerCase().contains("windows")) {
+                isJobRunningOnWindows = false;
+            }
+        } else {
+            throw new IllegalStateException("Cloud service config or virtual machine config should be specified in project config");
+        }
+        
+        int poolSpecTargetDedicated = vmConfigs.getNumVMs();
+        String poolSpecVmSize = vmConfigs.getVmSize();
+        int poolSpecMaxTasksPerNode = vmConfigs.getMaxTasksPerNode();
+        boolean poolSpecAutoPoolKeepAlive = vmConfigs.isPoolKeepAlive();
 
         Logger.log(listener, "Set PoolSpecification: TargetDedicated %d, VmSize %s", poolSpecTargetDedicated, poolSpecVmSize);
-        PoolSpecification poolSpecification = new PoolSpecification();
         poolSpecification.withTargetDedicated(poolSpecTargetDedicated)
                 .withVmSize(poolSpecVmSize)
-                .withMaxTasksPerNode(poolSpecMaxTasksPerNode)
-                .withCloudServiceConfiguration(cloudServiceConfiguration);
+                .withMaxTasksPerNode(poolSpecMaxTasksPerNode);
 
         Logger.log(listener, "Set AutoPoolSpecification: AutoPoolIdPrefix %s, KeepAlive %b", getAutoPoolIdPrefix(), poolSpecAutoPoolKeepAlive);
         AutoPoolSpecification autoPoolSpecification = new AutoPoolSpecification();
@@ -351,7 +354,7 @@ public class AzureBatchHelper {
         JobAddParameter param = new JobAddParameter();
         param.withId(poolJobId)
                 .withPoolInfo(poolInformation)
-                .withConstraints(jobConstraints);        
+                .withConstraints(jobConstraints);
 
         client.jobOperations().createJob(param);
         Logger.log(listener, "PoolJob %s is created.", poolJobId);
@@ -835,7 +838,7 @@ public class AzureBatchHelper {
         File errFile = new File(localFileName);
         if (errFile.exists() && errFile.length() > 0) {
             Logger.log(listener, "StdErr output in %s:", localFileName);
-            Logger.log(listener, FileUtils.readFileToString(errFile));
+            Logger.log(listener, "%s", FileUtils.readFileToString(errFile));
             Logger.log(listener, "End of StdErr output in %s.", localFileName);
         }
     } 
