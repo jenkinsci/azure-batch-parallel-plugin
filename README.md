@@ -2,7 +2,7 @@
 
 # Azure Batch Parallel Test Execution Jenkins Plugin
 
-This Jenkins post-build plugin allows you to execute tests in parallel with the Microsoft Azure Batch service, and can reduce the duration of your test runs, and therefore, potentially the cost. In this release, we support running tests with the Windows Server operating system only. Linux support will be available in a future release.
+This Jenkins post-build plugin allows you to execute tests in parallel with the Microsoft Azure Batch service, and can reduce the duration of your test runs, and therefore, potentially the cost. This plugin allows running tests with Paas/Iaas Windows and Iaas Linux.
 
 Azure Batch enables you to run parallel applications efficiently in the cloud. It's a platform service that schedules tasks to run on a managed collection of virtual machines.
 You can find an introduction to the Batch service in the [Basics of Azure Batch](https://azure.microsoft.com/documentation/articles/batch-technical-overview/).
@@ -38,8 +38,14 @@ Add a post-build action "Execute tests in parallel with Microsoft Azure Batch" t
 
 1. **Batch Account**: Choose one Azure Batch account from the accounts configured in Global configuration
 2. **Storage Account**: Choose one Azure Storage account from the accounts configured in Global configuration
-3. **Parallel Test Project Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load VM, resource, and test configurations from this config file. You can review the [project config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/ProjectConfigSchema.json) and see a [sample project config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleProjectSettings.json) for the `azure-mobile-apps-net-server` tests.
-4. **Parallel Test Split Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load task split configurations from this config file. You can review the [task split config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/TestSplitConfigSchema.json) and see a [sample task split config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleSplitterConfig.json) for the `azure-mobile-apps-net-server` tests.
+3. **Parallel Test Project Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load VM, resource, and test configurations from this config file. You can review the [project config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/ProjectConfigSchema.json) and see a few sample project configs below. For more information about PaaS (CloudServiceConfiguration) and IaaS (VirtualMachineConfiguration) pools, see [Batch Pool](http://aka.ms/batchpool).
+    - [sample PaaS Windows project config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SamplePaasWindowsProjectSettings.json) for the `azure-mobile-apps-net-server` tests running with PaaS Windows 
+    - [sample IaaS Windows project config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleIaasWindowsProjectSettings.json) for the `azure-mobile-apps-net-server` tests running with IaaS Windows
+    - [sample Ubuntu project config](https://github.com/azurebatch/simpleJUnitTests/blob/master/batchtest/SampleIaasLinuxUbuntuProjectSettings.json) for the `simpleJUnit` tests running with Ubuntu
+    - [sample Centos project config](https://github.com/azurebatch/simpleJUnitTests/blob/master/batchtest/SampleIaasLinuxCentosProjectSettings.json) for the `simpleJUnit` tests running with CentOS
+4. **Parallel Test Split Config File**: Specify the absolute path or relative path to the Jenkins WORKSPACE on the Jenkins server. The Jenkins server will load test split configurations from this config file. You can review the [test split config file schema](https://github.com/jenkinsci/azure-batch-parallel-plugin/blob/master/src/configs/schemas/TestSplitConfigSchema.json) and see a few sample test split configs:
+    - [sample Windows test split config](https://github.com/azurebatch/azure-mobile-apps-net-server/blob/master/batchtest/SampleSplitterConfig.json) for the `azure-mobile-apps-net-server` tests running on Windows
+    - [sample Linux test split config](https://github.com/azurebatch/simpleJUnitTests/blob/master/batchtest/SampleLinuxSplitterConfig.json) for the `simpleJUnit` tests running on Linux
 5. **Enable VM Utilization Profiler**: Check this option if you want to enable the VM Utilization Profiler to help fine tune the VM and test split configuration.
 
 # How this plugin works
@@ -61,9 +67,9 @@ logs of the plugin for the selected test run.
 - **Scripts running on VMs**: You will find all scripts running on VMs under `JenkinsWorkspace\azurebatchtemp\scripts` folder, which may help you
 diagnose potential issues.
 
-# Run sample test project: azure-mobile-apps-net-server
+# Run sample Windows test project: azure-mobile-apps-net-server
 
-You may use https://github.com/azurebatch/azure-mobile-apps-net-server tests to try out this plugin.
+You may use https://github.com/azurebatch/azure-mobile-apps-net-server tests to try out this plugin for tests running on Windows.
 
 ### Pre-requisites
 
@@ -87,7 +93,7 @@ Go to **Manage Jenkins** > **Configure System** > **Parallel Test Execution with
 
         - **Batch Account**: Choose the account you configured in Global Configuration
         - **Storage Account**: Choose the account you configured in Global Configuration
-        - **Parallel Test Project Config File**: Use `batchtest/SampleProjectSettings.json`
+        - **Parallel Test Project Config File**: Use `batchtest/SamplePaasWindowsProjectSettings.json`
         - **Parallel Test Split Config File**: Use `batchtest/SampleSplitterConfig.json`
         - **Enable VM Utilization Profiler**: Check this option if you want to enable the VM Utilization Profiler to help fine-tune the VM and test
 split configuration.
@@ -99,6 +105,76 @@ split configuration.
 ### Build test project
 
 Build the job "Job1", and it should result in a successful build and you should see all tests pass.
+
+# Run sample Linux test project: simpleJUnitTests
+
+You may use https://github.com/azurebatch/simpleJUnitTests tests to try out this plugin for tests running on Linux.
+
+### Pre-requisites
+
+- Azure Batch account
+- Azure Storage account
+- Install Jenkins server
+- Install [git Jenkins plugin](http://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin)
+- Install Azure Batch Parallel Test Execution Plugin (this plugin).
+
+### Configure Azure Batch Parallel Test Execution Jenkins plugin
+
+Go to **Manage Jenkins** > **Configure System** > **Parallel Test Execution with Microsoft Azure Batch**, and fill pre-created Azure Batch and Storage account information. And you may put multiple Batch and Storage account there, and different Jenkins project may use different Batch or Storage account.
+
+### Create and configure test project
+
+1. Create a **Freestyle project**, say "Job1"
+2. Go to **Job1** > **Configure**, and configure following:
+    1. In **Source Code Management** choose "Git". Use `https://github.com/azurebatch/simpleJUnitTests.git` as the Repository URL.
+    2. Add a **Post-build action** "Execute tests in parallel with Microsoft Azure Batch":
+
+        - **Batch Account**: Choose the account you configured in Global Configuration
+        - **Storage Account**: Choose the account you configured in Global Configuration
+        - **Parallel Test Project Config File**: Use `batchtest/SampleIaasLinuxUbuntuProjectSettings.json` if you want tests running on Ubuntu, or `batchtest/SampleIaasLinuxCentosProjectSettings.json` if you want tests running on CentOS.
+        - **Parallel Test Split Config File**: Use `batchtest/SampleLinuxSplitterConfig.json`
+        - **Enable VM Utilization Profiler**: Check this option if you want to enable the VM Utilization Profiler to help fine-tune the VM and test
+split configuration.
+    3. Add a **Post-build action** "Publish JUnit test result report" for the test results report:
+
+        - Configure **Test report XMLs** as `azurebatchtemp/**/*xml`
+3. Save the job
+
+### Build test project
+
+Build the job "Job1", and it should result in a successful build and you should see all tests pass.
+
+# Support more Linux distributions
+
+This plugin utilizes [blobxfer](https://github.com/Azure/blobxfer) to upload test results to Azure Storage, and each Linux distribution may have different way to install blobxfer. In current release, this plugin supports running tests on Ubuntu and CentOS. If you want to run tests on other Linux distributions, you can submit your configuration request at [Azure Batch feedback site](https://feedback.azure.com/forums/269742-batch). Or extend this plugin via adding blobxfer install script to VM setup script which is `vmSetupCommandLine` property defined in **Parallel Test Project Config File**. 
+
+This plugin supports CentOS via adding blobxfer install script to VM setup script. Below is sample blobxfer install script on CentOS, and is intended only to show how support for additional distributions can be added. You may find the full sample VM setup script on CentOS at [here](https://github.com/azurebatch/simpleJUnitTests/blob/master/batchtest/SampleCentosVMSetup.sh).
+
+``` Code
+platform=`python -mplatform`
+
+InstallBlobxfer () {
+  platform=`python -mplatform`
+  case "$platform" in 
+    *centos-7.0*)
+      yum check-update
+      yum install -y gcc libffi-devel python-devel openssl-devel
+
+      python -m pip install --upgrade pip
+      pip install --upgrade blobxfer
+      ;;
+     *)  
+        # Do nothing
+        ;; 
+  esac
+}
+
+# Install blobxfer which is required for uploading test logs
+if ! [ -x "$(command -v blobxfer)" ]; then
+  echo 'blobxfer is not installed, installing'  
+  InstallBlobxfer
+fi
+```
 
 # Tune VM and test split configurations
 
