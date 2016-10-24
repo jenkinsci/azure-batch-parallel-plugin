@@ -6,11 +6,12 @@
 
 package com.microsoft.azurebatch.jenkins.logger;
 
+import hudson.model.TaskListener;
+
 import java.io.*;
-import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import hudson.model.TaskListener;
+import java.util.*;
 
 /**
  * Logger helper class.

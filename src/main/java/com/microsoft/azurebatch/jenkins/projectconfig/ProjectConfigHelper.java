@@ -6,22 +6,17 @@
 
 package com.microsoft.azurebatch.jenkins.projectconfig;
 
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.TestConfigs;
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.VmConfigs;
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.ProjectConfig;
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.Resources;
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.AzureStorageBlob;
-import com.microsoft.azurebatch.jenkins.projectconfig.autogen.LocalResource;
+import com.microsoft.azurebatch.jenkins.projectconfig.autogen.*;
 import com.microsoft.azurebatch.jenkins.resource.AzureBlobResourceEntity;
 import com.microsoft.azurebatch.jenkins.resource.LocalResourceEntity;
 import com.microsoft.azurebatch.jenkins.resource.ResourceEntity;
 import hudson.model.BuildListener;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

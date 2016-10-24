@@ -8,34 +8,22 @@ package com.microsoft.azurebatch.jenkins.azurestorage;
 
 import com.microsoft.azurebatch.jenkins.logger.Logger;
 import com.microsoft.azurebatch.jenkins.utils.Utils;
+import com.microsoft.windowsazure.storage.CloudStorageAccount;
+import com.microsoft.windowsazure.storage.StorageCredentialsAccountAndKey;
+import com.microsoft.windowsazure.storage.StorageException;
+import com.microsoft.windowsazure.storage.blob.*;
+import hudson.FilePath;
+import hudson.model.BuildListener;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
-import com.microsoft.windowsazure.storage.CloudStorageAccount;
-import com.microsoft.windowsazure.storage.StorageCredentialsAccountAndKey;
-import com.microsoft.windowsazure.storage.StorageException;
-import com.microsoft.windowsazure.storage.blob.BlobContainerPermissions;
-import com.microsoft.windowsazure.storage.blob.BlobListingDetails;
-import com.microsoft.windowsazure.storage.blob.BlobRequestOptions;
-import com.microsoft.windowsazure.storage.blob.CloudBlobClient;
-import com.microsoft.windowsazure.storage.blob.CloudBlobContainer;
-import com.microsoft.windowsazure.storage.blob.CloudBlockBlob;
-import com.microsoft.windowsazure.storage.blob.ListBlobItem;
-import com.microsoft.windowsazure.storage.blob.SharedAccessBlobPermissions;
-import com.microsoft.windowsazure.storage.blob.SharedAccessBlobPolicy;
-import hudson.FilePath;
-import hudson.model.BuildListener;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
+import java.util.*;
 
 /**
  * AzureStorageHelper class

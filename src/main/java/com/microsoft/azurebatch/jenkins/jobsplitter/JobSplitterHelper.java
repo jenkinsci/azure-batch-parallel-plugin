@@ -6,10 +6,11 @@
 
 package com.microsoft.azurebatch.jenkins.jobsplitter;
 
+import com.microsoft.azurebatch.jenkins.azurebatch.TaskDefinition;
 import com.microsoft.azurebatch.jenkins.jobsplitter.autogen.JobSplitter;
 import com.microsoft.azurebatch.jenkins.jobsplitter.autogen.Task;
-import com.microsoft.azurebatch.jenkins.azurebatch.TaskDefinition;
 import hudson.model.BuildListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
