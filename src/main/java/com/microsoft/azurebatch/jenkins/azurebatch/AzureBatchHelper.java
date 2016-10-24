@@ -173,8 +173,8 @@ public class AzureBatchHelper {
         String containerSasKey = AzureStorageHelper.getContainerSas(listener, storageContainer, containerSasExpirationInMins);
         
         // Create working job with tasks
-        JobGenerator jobGenerator = JobGeneratorFactory.CreateJobGenerator(isJobRunningOnWindows);
-        jobGenerator.Initialize(listener, workspaceHelper, projectConfigHelper, jobSplitterHelper, sharedResourceEntityList, 
+        JobGenerator jobGenerator = JobGeneratorFactory.createJobGenerator(isJobRunningOnWindows);
+        jobGenerator.initialize(listener, workspaceHelper, projectConfigHelper, jobSplitterHelper, sharedResourceEntityList, 
                 client, jobId, poolId, storageAccountInfo, containerSasKey);
         
         jobGenerator.createJobWithTasks(jobSplitterHelper.getJobTimeoutInMinutes());

@@ -63,7 +63,7 @@ public abstract class JobGenerator {
     public JobGenerator() {
     }
     
-    public void Initialize(BuildListener listener, WorkspaceHelper workspaceHelper,
+    public void initialize(BuildListener listener, WorkspaceHelper workspaceHelper,
             ProjectConfigHelper projectConfigHelper, JobSplitterHelper jobSplitterHelper, List<ResourceEntity> sharedResourceEntityList,
             BatchClient client, String jobId, String poolId,
             StorageAccountInfo storageAccountInfo, String containerSasKey) throws IOException {
