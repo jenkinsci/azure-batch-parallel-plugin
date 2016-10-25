@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.microsoft.azurebatch</groupId>
     <artifactId>azure-batch-parallel</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -51,7 +51,7 @@
      <connection>scm:git:git://github.com/jenkinsci/azure-batch-parallel-plugin.git</connection>
      <developerConnection>scm:git:git@github.com:jenkinsci/azure-batch-parallel-plugin.git</developerConnection>
      <url>http://github.com/jenkinsci/azure-batch-parallel-plugin</url>
-     <tag>azure-batch-parallel-0.2</tag>
+     <tag>HEAD</tag>
   </scm>
 
     <repositories>
